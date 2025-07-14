@@ -4,7 +4,7 @@
 # authors: Changwoo Lim
 # url: https://github.com/ChangwooLim/discourse-download-limiter
 
-enabled_site_setting :plugin_name_enabled
+enabled_site_setting :discourse_download_limiter_enabled
 
 after_initialize do
   # --- 서버 측(Ruby) 확장 코드 로드 ---

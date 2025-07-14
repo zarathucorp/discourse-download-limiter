@@ -1,6 +1,6 @@
 # plugins:
 discourse-download-limiter:
-  discourse-download-limiter-enabled:
+  discourse_download_limiter_enabled:
     default: false
     client: true
   download_allowed_group:
