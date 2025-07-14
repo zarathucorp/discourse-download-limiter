@@ -7,7 +7,7 @@
 enabled_site_setting :download_limiter_enabled
 
 # Load the guardian extension
-load File.expand_path('lib/discourse-download-limiter/guardian_extension.rb', __FILE__)
+require_relative 'lib/discourse-download-limiter/guardian_extension.rb'
 
 after_initialize do
   # Prepend our custom module to the UploadsController
