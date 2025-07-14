@@ -1,7 +1,7 @@
 # name: discourse-download-limiter
 # about: Restricts file downloads to a specific group and the uploader.
 # version: 1.0
-# authors: Your Name
+# authors: Changwoo Lim
 # url: https://github.com/ChangwooLim/discourse-download-limiter
 after_initialize do
   # --- 서버 측(Ruby) 확장 코드 로드 ---

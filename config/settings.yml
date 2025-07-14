@@ -1,5 +1,5 @@
 plugins:
-  discourse_download_limiter:
+  discourse-download-limiter:
     download_allowed_group:
       default: ""
       type: group
