@@ -1,9 +1,8 @@
-# plugins:
-discourse-download-limiter:
-  discourse_download_limiter_enabled:
-    default: false
+plugins:
+  download_limiter_enabled:
+    default: true
     client: true
-  download_allowed_group:
-    default: "1|2"
-    type: group_list
-    description: "Sets the user group whose members are allowed to download file attachments."
+  download_limiter_allowed_groups: # <-- 이름도 복수형으로 변경 (권장)
+    default: ""
+    type: group_list # <-- 'group'에서 'group_list'로 변경
+    description: "Select the groups whose members are allowed to download files."

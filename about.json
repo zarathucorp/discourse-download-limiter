@@ -1,0 +1,10 @@
+{
+  "name": "Discourse Download Limiter",
+  "about_url": "https://github.com/YOUR_USERNAME/discourse-download-limiter",
+  "license_url": "https://github.com/YOUR_USERNAME/discourse-download-limiter/blob/main/LICENSE",
+  "authors": "Changwoo Lim",
+  "version": "0.1",
+  "theme_version": null,
+  "minimum_discourse_version": null,
+  "maximum_discourse_version": null
+}

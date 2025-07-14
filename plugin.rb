@@ -1,29 +1,40 @@
 # name: discourse-download-limiter
-# about: Restricts file downloads to a specific group and the uploader.
-# version: 1.0
-# authors: Changwoo Lim
-# url: https://github.com/ChangwooLim/discourse-download-limiter
+# about: Restricts file downloads to members of a specific group or the uploader.
+# version: 0.1
+# authors: Your Name
+# url: https://github.com/your-repo
 
-enabled_site_setting :discourse_download_limiter_enabled
+enabled_site_setting :download_limiter_enabled
+
+# Load the guardian extension
+load File.expand_path('lib/discourse-download-limiter/guardian_extension.rb', __FILE__)
 
 after_initialize do
-  # --- 서버 측(Ruby) 확장 코드 로드 ---
-  
-  # Guardian 클래스에 커스텀 권한 로직을 추가하기 위한 모듈 로드
-  require_relative 'lib/discourse_download_limiter/guardian_extensions'
-  
-  # UploadsController를 수정하기 위한 모듈 로드
-  require_relative 'lib/discourse_download_limiter/uploads_controller_extensions'
-
-  # --- 로드된 코드를 Discourse에 적용 ---
-  
-  # Guardian 클래스에 우리가 만든 GuardianExtensions 모듈을 포함시켜
-  # can_download_upload? 메서드를 사용할 수 있게 함
-  Guardian.include(DiscourseDownloadLimiter::GuardianExtensions)
-
-  # UploadsController 클래스를 열어, 우리가 만든 UploadsControllerExtensions 모듈의 코드를
-  # 기존 코드보다 먼저 실행하도록 설정 (prepend)
+  # Prepend our custom module to the UploadsController
+  # This is the standard way to add logic before the original method runs
   UploadsController.class_eval do
-    prepend DiscourseDownloadLimiter::UploadsControllerExtensions
+    prepend_before_action :check_download_permission, only: [:show]
+
+    private
+
+    def check_download_permission
+      return if guardian.is_admin? # Admins can always download
+
+      # Get the requested upload
+      upload = Upload.find_by(id: params[:id])
+      return if upload.nil? # Should be handled by Discourse, but as a safeguard
+
+      unless guardian.can_download_upload?(upload)
+        # If the user doesn't have permission, deny access
+        raise Discourse::InvalidAccess.new("You do not have permission to download this file.")
+      end
+    end
+  end
+
+  # Extend the Guardian with our custom logic
+  # The Guardian is Discourse's central permission checking class
+  Discourse::Application.routes.reload do
+    # This ensures our Guardian changes are applied
+    Guardian.class_eval { include DiscourseDownloadLimiter::GuardianExtension }
   end
 end
