@@ -1,4 +1,4 @@
-module DiscourseGranularDownloads
+module DiscourseDownloadLimiter
   module GuardianExtensions
     # 'upload' 객체를 인자로 받아 다운로드 가능 여부를 확인하는 새로운 메서드
     def can_download_upload?(upload)

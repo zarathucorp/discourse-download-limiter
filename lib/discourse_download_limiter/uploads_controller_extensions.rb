@@ -1,4 +1,4 @@
-module DiscourseGranularDownloads
+module DiscourseDownloadLimiter
   module UploadsControllerExtensions
     # Discourse의 기존 'show' 액션이 실행되기 전에 이 코드를 먼저 실행
     def show
