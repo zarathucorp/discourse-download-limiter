@@ -13,7 +13,7 @@ after_initialize do
   # Prepend our custom module to the UploadsController
   # This is the standard way to add logic before the original method runs
   UploadsController.class_eval do
-    prepend_before_action :check_download_permission, only: [:show]
+    prepend_before_action :check_download_permission, only: [:show, :show_short]
 
     private
 
