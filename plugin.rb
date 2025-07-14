@@ -33,8 +33,5 @@ after_initialize do
 
   # Extend the Guardian with our custom logic
   # The Guardian is Discourse's central permission checking class
-  Discourse::Application.routes.reload do
-    # This ensures our Guardian changes are applied
-    Guardian.class_eval { include DiscourseDownloadLimiter::GuardianExtension }
-  end
+  Guardian.class_eval { include DiscourseDownloadLimiter::GuardianExtension }
 end
