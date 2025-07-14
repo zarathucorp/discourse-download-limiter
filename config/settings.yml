@@ -1,0 +1,6 @@
+plugins:
+  discourse_download_limiter:
+    download_allowed_group:
+      default: ""
+      type: group
+      description: "Sets the user group whose members are allowed to download file attachments."
