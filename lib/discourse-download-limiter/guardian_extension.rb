@@ -21,6 +21,18 @@ module DiscourseDownloadLimiter
         return true
       end
 
+      # 2. 설정에서 차단된 그룹 목록 가져오기
+      denied_group_ids_str = SiteSetting.download_limiter_denied_groups
+      Rails.logger.info "Denied Group IDs from Setting: #{denied_group_ids_str.inspect}"
+      denied_group_ids = denied_group_ids_str.split('|').map(&:to_i)
+      Rails.logger.info "Parsed Denied Group IDs: #{denied_group_ids.inspect}"
+      # 3. 사용자가 차단된 그룹에 속해 있는지 확인
+      if user && (user.group_ids & denied_group_ids).any?
+        Rails.logger.info "Decision: DENIED (User is in a denied group)."
+        Rails.logger.info "------------------------------------"
+        return false
+      end
+
       # 2. 설정에서 허용된 그룹 목록 가져오기
       allowed_group_ids_str = SiteSetting.download_limiter_allowed_groups
       Rails.logger.info "Allowed Group IDs from Setting: #{allowed_group_ids_str.inspect}"

@@ -1,7 +1,7 @@
 {
   "name": "Discourse Download Limiter",
   "about_url": "https://github.com/YOUR_USERNAME/discourse-download-limiter",
-  "license_url": "https://github.com/YOUR_USERNAME/discourse-download-limiter/blob/main/LICENSE",
+  "license_url": "https://github.com/ChangwooLim/discourse-download-limiter/blob/main/LICENSE",
   "authors": "Changwoo Lim",
   "version": "0.1",
   "theme_version": null,
