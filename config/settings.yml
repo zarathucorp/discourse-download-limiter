@@ -2,6 +2,9 @@ plugins:
   download_limiter_enabled:
     default: true
     client: true
+  download_log_post_url:
+    default: ""
+    client: true
   download_limiter_allowed_groups: # <-- 이름도 복수형으로 변경 (권장)
     default: ""
     type: group_list # <-- 'group'에서 'group_list'로 변경
