@@ -33,6 +33,25 @@ module DiscourseDownloadLimiter
         return false
       end
 
+      # 4. "Log and Allow" 그룹 확인
+      allowed_with_log_group_ids_str = SiteSetting.download_limiter_allowed_with_log_groups
+      api_route = SiteSetting.download_limiter_log_api_route
+      Rails.logger.info "Allowed with Log Group IDs from Setting: #{allowed_with_log_group_ids_str.inspect}"
+
+      if user && allowed_with_log_group_ids_str.present?
+        allowed_with_log_group_ids = allowed_with_log_group_ids_str.split('|').map(&:to_i)
+        if (user.group_ids & allowed_with_log_group_ids).any?
+          if api_route.present?
+            Jobs.enqueue(:log_download, user_id: user.id, upload_id: upload.id, timestamp: Time.now.iso8601)
+            Rails.logger.info "Decision: ALLOWED (User in 'log and allow' group). Enqueued log job."
+          else
+            Rails.logger.info "Decision: ALLOWED (User in 'log and allow' group). API route not set, skipping log."
+          end
+          Rails.logger.info "------------------------------------"
+          return true
+        end
+      end
+
       # 2. 설정에서 허용된 그룹 목록 가져오기
       allowed_group_ids_str = SiteSetting.download_limiter_allowed_groups
       Rails.logger.info "Allowed Group IDs from Setting: #{allowed_group_ids_str.inspect}"

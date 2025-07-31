@@ -10,3 +10,10 @@ plugins:
     default: ""
     type: group_list # <-- 'group'에서 'group_list'로 변경
     description: "본인이 업로드한 파일 제외 어떠한 경우라도 파일 다운로드를 허용하지 않는 그룹을 선택합니다. 이 그룹의 멤버는 파일을 다운로드할 수 없습니다."
+  download_limiter_allowed_with_log_groups:
+    default: ""
+    type: group_list
+    description: "파일 다운로드를 허용하되, 다운로드 기록을 외부 API로 전송하는 그룹을 선택합니다."
+  download_limiter_log_api_route:
+    default: ""
+    description: "다운로드 로그를 POST 요청으로 전송할 API 경로입니다. (예: https://example.com/api/log)"

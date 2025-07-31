@@ -9,6 +9,42 @@ enabled_site_setting :download_limiter_enabled
 after_initialize do
   require_relative 'lib/discourse-download-limiter/guardian_extension'
 
+  module ::DiscourseDownloadLimiter
+    class LogDownload < ::Jobs::Base
+      def execute(args)
+        return unless SiteSetting.download_limiter_enabled
+        
+        api_route = SiteSetting.download_limiter_log_api_route
+        return if api_route.blank?
+
+        user = User.find_by(id: args[:user_id])
+        upload = Upload.find_by(id: args[:upload_id])
+        return if user.nil? || upload.nil?
+
+        uri = URI.parse(api_route)
+        http = Net::HTTP.new(uri.host, uri.port)
+        http.use_ssl = (uri.scheme == 'https')
+
+        request = Net::HTTP::Post.new(uri.request_uri, 'Content-Type' => 'application/json')
+        request.body = {
+          user_id: user.id,
+          username: user.username,
+          upload_id: upload.id,
+          file_name: upload.original_filename,
+          file_url: Discourse.base_url + upload.url,
+          downloaded_at: args[:timestamp]
+        }.to_json
+
+        begin
+          response = http.request(request)
+          Rails.logger.info "Logged download for user #{user.username} to #{api_route}. Response: #{response.code}"
+        rescue => e
+          Rails.logger.error "Failed to log download to #{api_route}. Error: #{e.message}"
+        end
+      end
+    end
+  end
+
   UploadsController.class_eval do
     prepend_before_action :check_download_permission, only: [:show, :show_short]
 
