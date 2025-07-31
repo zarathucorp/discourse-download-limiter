@@ -8,6 +8,7 @@ enabled_site_setting :download_limiter_enabled
 
 after_initialize do
   require_relative 'lib/discourse-download-limiter/guardian_extension'
+  require_relative 'lib/jobs/send_download_log'
 
   UploadsController.class_eval do
     prepend_before_action :check_download_permission, only: [:show, :show_short]
@@ -42,6 +43,13 @@ after_initialize do
       # guardian_extension.rb 파일의 로직을 호출합니다.
       can_download = guardian.can_download_upload?(upload)
       Rails.logger.info "--- [DDL DEBUG] Step 8: can_download_upload? returned: #{can_download}."
+
+      # --- 다운로드 로그 POST 요청 ---
+      post_url = SiteSetting.download_log_post_url
+      if post_url.present?
+        Jobs.enqueue(:send_download_log, post_url: post_url, user_id: current_user&.id, upload_id: upload.id, download_allowed: can_download)
+      end
+      # --- 요청 끝 ---
 
       unless can_download
         Rails.logger.info "--- [DDL DEBUG] Step 9: User cannot download. Raising InvalidAccess error."
